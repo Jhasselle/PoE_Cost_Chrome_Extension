@@ -1,5 +1,11 @@
-# Test code learning python nuances with regards to json and requests
+
 # cd /mnt/c/Users/Jason/Desktop/BS
+
+# To do:
+#	maintain poe.ninja data in memory
+#	5-6 link weapons
+#	helm enchants
+#	rare items
 
 import requests 
 import json
@@ -72,8 +78,7 @@ while(keepGoing):
 			"exaltedValue": 0
 		}
 		itemList.append(itemDict)
-		
-	# yeah yeah, this is gnarly, but I'm just testing stuff
+
 	no = True
 	if no:
 		urlList = ["https://poe.ninja/api/Data/GetUniqueWeaponOverview?league=Betrayal",
