@@ -1,4 +1,4 @@
-
+# Test code learning python nuances with regards to json and requests
 # cd /mnt/c/Users/Jason/Desktop/BS
 
 import requests 
@@ -72,7 +72,8 @@ while(keepGoing):
 			"exaltedValue": 0
 		}
 		itemList.append(itemDict)
-
+		
+	# yeah yeah, this is gnarly, but I'm just testing stuff
 	no = True
 	if no:
 		urlList = ["https://poe.ninja/api/Data/GetUniqueWeaponOverview?league=Betrayal",
