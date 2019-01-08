@@ -1,4 +1,3 @@
-
 var ninjaAccessory = new XMLHttpRequest();
 var ninjaArmour = new XMLHttpRequest();
 var ninjaFlask = new XMLHttpRequest();
@@ -89,22 +88,16 @@ setTimeout(function() {
 function getNames(url) {
 
 
-	var accountName = 'Billy'; 
-	var characterName = 'Bob';
+	var accountName = ''; 
+	var characterName = '';
 
 	//example:
 	//https://poe.ninja/challenge/builds/char/xPazam/PaZam_xxx?i=0
 	var startIndex = url.indexOf('char');
 	startIndex = url.indexOf('/', startIndex) + 1;
 	endIndex = url.indexOf('/', startIndex);
-
-	console.log(url.substring(startIndex, endIndex));
-	console.log(startIndex);
-
 	accountName = url.substring(startIndex, endIndex);
-
 	startIndex = endIndex + 1;
-
 	endIndex = url.indexOf('?', startIndex);
 
 	if (endIndex == -1) {
