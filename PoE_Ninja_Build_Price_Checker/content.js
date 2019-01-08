@@ -8,6 +8,15 @@ var ninjaWeapon = new XMLHttpRequest();
 var poeCharacterInventory= new XMLHttpRequest();
 var poeCharacterJewels = new XMLHttpRequest();
 
+var currentURL = window.location.href;
+
+console.log(currentURL);
+var names = getNames(currentURL);
+var accountName = names[0];
+console.log('Account name:', accountName);
+var characterName = names[1];
+console.log('Character name:', characterName);
+
 // poe.ninja Prices JSON
 ninjaAccessory.open('GET', 'https://poe.ninja/api/Data/GetUniqueAccessoryOverview?league=Betrayal');
 ninjaAccessory.responseType = 'json';
@@ -30,11 +39,14 @@ ninjaWeapon.responseType = 'json';
 ninjaWeapon.send();
 
 // Character Items JSON
-poeCharacterInventory.open('GET', 'https://www.pathofexile.com/character-window/get-items?accountName=xPazam&character=pazam_xxx');
+
+var inventorySearchString = 'https://www.pathofexile.com/character-window/get-items?accountName=' + accountName + '&character=' + characterName;
+poeCharacterInventory.open('GET', inventorySearchString);
 poeCharacterInventory.responseType = 'json';
 poeCharacterInventory.send();
 
-poeCharacterJewels.open('GET', 'https://www.pathofexile.com/character-window/get-passive-skills?accountName=xPazam&character=pazam_xxx&reqData=0');
+var jewelSearchString = 'https://www.pathofexile.com/character-window/get-passive-skills?accountName=' + accountName + '&character=' + characterName + '&reqData=0';
+poeCharacterJewels.open('GET', jewelSearchString);
 poeCharacterJewels.responseType = 'json';
 poeCharacterJewels.send();
 
@@ -63,9 +75,10 @@ setTimeout(function() {
         && (poeCharacterInventory.readyState == 4 && poeCharacterInventory.status == 200)) {
         console.log('We are ready!');
 
-        // totally not lengthy
+     	// ...Totally not a terrible length...
         var cost = calculateCharacterCost(ninjaAccessory.response, ninjaArmour.response, ninjaFlask.response, ninjaWeapon.response, poeCharacterInventory.response);
-        console.log('The cost is: ', cost);
+        cost += calculateJewelCost(ninjaJewel.response, poeCharacterJewels.response);
+        console.log('Estimated cost: ', cost, 'chaos');
     }
     else {
         console.log('We are not ready!');
@@ -73,23 +86,80 @@ setTimeout(function() {
 }, 2000);
 
 
-function calculateCharacterCost(accessoryPrice, armourPrice, flaskPrice, weaponPrice, characterItems){
-    var totalChaos = 0;
+function getNames(url) {
 
-    // First let's collect all of the character items that we can use to search through poe.ninja's item Prices
 
-    // for each item in characterItems array
-    // if name is '' then ignore because it is a rare item (stretch goal)
-    // 
-    var numOfInventoryItems = Object.keys(characterItems['items']).length;
-    console.log('This character has', numOfInventoryItems, 'items.');
+	var accountName = 'Billy'; 
+	var characterName = 'Bob';
+
+	//example:
+	//https://poe.ninja/challenge/builds/char/xPazam/PaZam_xxx?i=0
+	var startIndex = url.indexOf('char');
+	startIndex = url.indexOf('/', startIndex) + 1;
+	endIndex = url.indexOf('/', startIndex);
+
+	console.log(url.substring(startIndex, endIndex));
+	console.log(startIndex);
+
+	accountName = url.substring(startIndex, endIndex);
+
+	startIndex = endIndex + 1;
+
+	endIndex = url.indexOf('?', startIndex);
+
+	if (endIndex == -1) {
+		characterName = url.substring(startIndex);
+	}
+	else {
+		characterName = url.substring(startIndex, endIndex);
+	}
+
+	
+	return [accountName, characterName];
+}
+
+function calculateJewelCost(jewelPrices, jewels) {
+
+	var totalChaos = 0;
+	var numOfJewels = Object.keys(jewels['items']).length;
+	var jewelPricesLength = Object.keys(jewelPrices['lines']).length;
+	// console.log('JEWELS!!!!!');
+	// console.log(jewels);
+	// console.log(jewelPrices);
+	// console.log(jewelPricesLength);
+
+	for (var i = 0; i < numOfJewels; i++){
+		console.log('___________________________________');
+		var itemName = jewels['items'][i]['name'];
+
+		if (jewels['items'][i]['frameType'] == 3) {
+			for (var j = 0; j < jewelPricesLength; j++) {
+				if (itemName == jewelPrices['lines'][j]['name']){
+					console.log(itemName, 'found.');
+					console.log('poe.ninja prices: ', jewelPrices['lines'][j]['chaosValue']);
+					totalChaos += jewelPrices['lines'][j]['chaosValue'];
+				}
+			}
+		}
+		else {
+			console.log(itemName, 'is a rare jewel.');
+			console.log('A later version will support price estimation for rare jewels.');
+		}
+	}
+
+	return totalChaos;
+}
+
+function calculateCharacterCost(accessoryPrice, armourPrice, flaskPrice, weaponPrice, inventory) {
     
-    for (var i = 0; i < numOfInventoryItems; i++) {
-    	
+    var totalChaos = 0;
+    var numOfInventoryItems = Object.keys(inventory['items']).length;
+    console.log('This character has', numOfInventoryItems, 'inventory items.');
 
-		var item = Object.entries(characterItems['items'])[i];
-        var itemName = characterItems['items'][i]['name'];
-        var itemType = Object.keys(characterItems['items'][i]['category'])[0];
+    for (var i = 0; i < numOfInventoryItems; i++) {
+		var item = Object.entries(inventory['items'])[i];
+        var itemName = inventory['items'][i]['name'];
+        var itemType = Object.keys(inventory['items'][i]['category'])[0];
 
         // This condition will not be necessary once prices of rare items 
         // can be estimated. Until then, we shall skip them.
@@ -100,19 +170,16 @@ function calculateCharacterCost(accessoryPrice, armourPrice, flaskPrice, weaponP
             //console.log(item, itemType, item[1]['name'])
 
             if (itemType == 'accessories'){
-                totalChaos += findUniqueItemCost(accessoryPrice, item, itemType);
+                totalChaos += findInventoryItemCost(accessoryPrice, item, itemType);
             }
             else if (itemType == 'armour'){
-                totalChaos += findUniqueItemCost(armourPrice, item, itemType);
+                totalChaos += findInventoryItemCost(armourPrice, item, itemType);
             }
             else if (itemType == 'flasks'){
-                totalChaos += findUniqueItemCost(flaskPrice, item, itemType);
+                totalChaos += findInventoryItemCost(flaskPrice, item, itemType);
             }
-            // else if (itemType == 'jewel'){
-            //     totalChaos += findUniqueItemCost(jewelPrice, itemName);
-            //}
             else if (itemType == 'weapons'){
-                totalChaos += findUniqueItemCost(weaponPrice, item, itemType);
+                totalChaos += findInventoryItemCost(weaponPrice, item, itemType);
             }
             else {
                 console.log('Unknown item type. FeelsBadMan');
@@ -131,7 +198,7 @@ function calculateCharacterCost(accessoryPrice, armourPrice, flaskPrice, weaponP
 *	@param {String representing the item type} itemType
 */
 
-function findUniqueItemCost(itemList, item, itemType) {
+function findInventoryItemCost(itemList, item, itemType) {
 
 	console.log('___________________________________');
 	console.log(item[1]['name']);
