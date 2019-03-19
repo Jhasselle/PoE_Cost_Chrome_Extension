@@ -1,3 +1,6 @@
+#This was the proof of concept.
+# For some reason, I thought Chrome extensions could be written in Python. 
+# Time to learn JS.
 
 # To do:
 #	maintain poe.ninja data in memory 
