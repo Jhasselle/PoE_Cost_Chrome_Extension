@@ -1,8 +1,6 @@
 
-# cd /mnt/c/Users/Jason/Desktop/BS
-
 # To do:
-#	maintain poe.ninja data in memory
+#	maintain poe.ninja data in memory 
 #	5-6 link weapons
 #	helm enchants
 #	rare items
