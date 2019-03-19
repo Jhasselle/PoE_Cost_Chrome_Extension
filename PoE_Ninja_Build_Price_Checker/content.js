@@ -1,4 +1,5 @@
 // Welcome to the Spaghetti Factory...
+// First time using APIs and JS, yeeehaw!
 
 chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
 	console.log('Attemping to get URL');
@@ -23,27 +24,27 @@ function start(currentURL) {
 	$(function(){$('#character').text(characterName);});
 
 	// poe.ninja Prices JSON
-	ninjaAccessory.open('GET', 'https://poe.ninja/api/Data/GetUniqueAccessoryOverview?league=Betrayal');
+	ninjaAccessory.open('GET', 'https://poe.ninja/api/Data/GetUniqueAccessoryOverview?league=Synthesis');
 	ninjaAccessory.responseType = 'json';
 	ninjaAccessory.send();
 
-	ninjaArmour.open('GET', 'https://poe.ninja/api/Data/GetUniqueArmourOverview?league=Betrayal');
+	ninjaArmour.open('GET', 'https://poe.ninja/api/Data/GetUniqueArmourOverview?league=Synthesis');
 	ninjaArmour.responseType = 'json';
 	ninjaArmour.send();
 
-	ninjaFlask.open('GET', 'https://poe.ninja/api/Data/GetUniqueFlaskOverview?league=Betrayal');
+	ninjaFlask.open('GET', 'https://poe.ninja/api/Data/GetUniqueFlaskOverview?league=Synthesis');
 	ninjaFlask.responseType = 'json';
 	ninjaFlask.send();
 
-	ninjaJewel.open('GET', 'https://poe.ninja/api/Data/GetUniqueJewelOverview?league=Betrayal');
+	ninjaJewel.open('GET', 'https://poe.ninja/api/Data/GetUniqueJewelOverview?league=Synthesis');
 	ninjaJewel.responseType = 'json';
 	ninjaJewel.send();
 
-	ninjaWeapon.open('GET', 'https://poe.ninja/api/Data/GetUniqueWeaponOverview?league=Betrayal');
+	ninjaWeapon.open('GET', 'https://poe.ninja/api/Data/GetUniqueWeaponOverview?league=Synthesis');
 	ninjaWeapon.responseType = 'json';
 	ninjaWeapon.send();
 
-	ninjaCharacter.open('GET', 'https://poe.ninja/api/data/458db603f91b064de6bc85dc381caa2d/getcharacter?overview=betrayal&account=' + accountName + '&name=' + characterName);
+	ninjaCharacter.open('GET', 'https://poe.ninja/api/data/458db603f91b064de6bc85dc381caa2d/getcharacter?overview=Synthesis&account=' + accountName + '&name=' + characterName);
 	ninjaCharacter.responseType = 'json';
 	ninjaCharacter.send();
 
@@ -307,7 +308,8 @@ function updateHTML(itemSlot, itemName, itemClass, url, value, index) {
 
 	var id = '';
 	var imgId = '';
-
+	
+	// Nice giant switch bro
 	switch(itemSlot) {
 		case 1:
 			id = '#helmet';
@@ -366,11 +368,15 @@ function updateHTML(itemSlot, itemName, itemClass, url, value, index) {
 	}
 
 	imgId = id + 'Img';
-
+	
+	
+	
+	// Don't delete or program will crash
 	console.log('************************');
 	console.log(itemSlot, itemName, url);
 	console.log(id, imgId);
 	console.log('************************');
+	// ...that would be funny.
 
 
 	$(function(){$(id).text(itemName);});
