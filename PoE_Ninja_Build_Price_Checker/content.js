@@ -1,5 +1,6 @@
 // Welcome to the Spaghetti Factory...
-// First time using APIs and JS, yeeehaw!
+// https://poe.ninja/api/data/37541b2b936807f37f5d2d46a2f19838/getcharacter?overview=synthesis&account=xPazam&name=PaZam_NomicMVP
+// I got this from loading the page with inspect open. It should contained within a response header
 
 chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
 	console.log('Attemping to get URL');
@@ -19,6 +20,9 @@ function start(currentURL) {
 	var names = getNames(currentURL);
 	var accountName = names[0];
 	var characterName = names[1];
+
+	var ninjaLeague = 'synthesis'
+	var ninjaCode = '9c4c32244947096e26b005aa652a3e13'
 
 	$(function(){$('#account').text(accountName);});
 	$(function(){$('#character').text(characterName);});
@@ -43,8 +47,10 @@ function start(currentURL) {
 	ninjaWeapon.open('GET', 'https://poe.ninja/api/Data/GetUniqueWeaponOverview?league=Synthesis');
 	ninjaWeapon.responseType = 'json';
 	ninjaWeapon.send();
+https://poe.ninja/api/data/9c4c32244947096e26b005aa652a3e13/getcharacter?overview=synthesis&account=xPazam&name=PaZam_NomicMVP
+	var ninjaString = 'https://poe.ninja/api/data/' + ninjaCode	+ '/getcharacter?overview=' + ninjaLeague + '&account=' + accountName + '&name=' + characterName
 
-	ninjaCharacter.open('GET', 'https://poe.ninja/api/data/458db603f91b064de6bc85dc381caa2d/getcharacter?overview=Synthesis&account=' + accountName + '&name=' + characterName);
+	ninjaCharacter.open('GET', ninjaString);
 	ninjaCharacter.responseType = 'json';
 	ninjaCharacter.send();
 
@@ -308,8 +314,7 @@ function updateHTML(itemSlot, itemName, itemClass, url, value, index) {
 
 	var id = '';
 	var imgId = '';
-	
-	// Nice giant switch bro
+
 	switch(itemSlot) {
 		case 1:
 			id = '#helmet';
@@ -368,15 +373,11 @@ function updateHTML(itemSlot, itemName, itemClass, url, value, index) {
 	}
 
 	imgId = id + 'Img';
-	
-	
-	
-	// Don't delete or program will crash
+
 	console.log('************************');
 	console.log(itemSlot, itemName, url);
 	console.log(id, imgId);
 	console.log('************************');
-	// ...that would be funny.
 
 
 	$(function(){$(id).text(itemName);});

@@ -1,6 +1,6 @@
 {
-  "name": "poe.ninja build price checker",
-  "description": "Calculates how much a build costs in Chaos orbs.",
+  "name": "poe.ninja Gear Value",
+  "description": "Estimates gear value of poe.ninja character.",
   "manifest_version": 2,
   "version": "1",
   "icons": { 
@@ -20,7 +20,7 @@
     "persistent": false
   },
   "browser_action": {
-    "default_title": "Show me the money",
+    "default_title": "Show me the money!",
     "default_popup": "popup.html"
   }
 }
